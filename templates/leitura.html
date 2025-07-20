@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookJourney - Leituras</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- Link corrigido para o Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" xintegrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        :root {
+            --primary-color: #4CAF50; /* Verde vibrante */
+            --secondary-color: #333; /* Cinza escuro */
+            --accent-color: #f39c12; /* Dourado para estrelas */
+            --background-light: #f6f5ee; /* Creme claro */
+            --background-dark: #2c3e50; /* Azul escuro para modo noturno */
+            --text-light: #333;
+            --text-dark: #ecf0f1;
+            --card-background-light: #fff;
+            --card-background-dark: #34495e;
+            --border-color-light: #ddd;
+            --border-color-dark: #555;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--background-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            transition: background 0.3s ease, color 0.3s ease;
+            color: var(--text-light);
+        }
+
+        body.dark-mode {
+            background-color: var(--background-dark);
+            color: var(--text-dark);
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3 {
+            color: var(--accent-color); /* Cores mais claras no modo noturno */
+        }
+
+        /* Top Header for Logo and Company Name (similar to index.html) */
+        .top-header {
+            background-color: var(--card-background-light);
+            width: 100%;
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color-light);
+            z-index: 1002; /* Above navbar */
+            position: sticky;
+            top: 0;
+        }
+
+        body.dark-mode .top-header {
+            background-color: var(--card-background-dark);
+            border-color: var(--border-color-dark);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--primary-color);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .logo {
+            color: var(--accent-color);
+        }
+
+        .logo:hover {
+            color: #3d8c42;
+        }
+
+        body.dark-mode .logo:hover {
+            color: #e68a00;
+        }
+
+        .logo-icon {
+            width: 30px;
+            height: 30px;
+            fill: var(--primary-color);
+            transition: fill 0.3s ease;
+        }
+
+        body.dark-mode .logo-icon {
+            fill: var(--accent-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 20px auto;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        header {
+            background: linear-gradient(to right, rgba(0, 242, 96, 0.9), rgba(76, 162, 205, 0.9));
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            border-radius: 12px 12px 0 0;
+            margin: 0px -20px 30px -20px; /* Adjust margin to fit container padding */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin: 0;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: var(--secondary-color);
+            padding: 15px 0;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            /* REMOVIDO: position: sticky; */
+            /* REMOVIDO: top: 60px; */
+            z-index: 1000;
+        }
+
+        nav a {
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: #555;
+        }
+
+        .flash-messages {
+            list-style: none;
+            padding: 0;
+            margin: 20px auto;
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .flash-messages.fade-out {
+            opacity: 0;
+        }
+
+        .flash-messages li {
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .flash-messages li.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .flash-messages li.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        main {
+            width: 100%;
+            padding: 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2em;
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        body.dark-mode .section-title::after {
+            background-color: var(--accent-color);
+        }
+
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        .book-card {
+            background-color: var(--card-background-light);
+            border: 1px solid var(--border-color-light);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            position: relative; /* Para posicionar o botão de exclusão */
+        }
+
+        body.dark-mode .book-card {
+            background-color: var(--card-background-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .book-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .book-card h3 {
+            font-size: 1.5em;
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        body.dark-mode .book-card h3 {
+            color: var(--accent-color);
+        }
+
+        .book-card .author {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        body.dark-mode .book-card .author {
+            color: #bbb;
+        }
+
+        .book-card .snippet {
+            font-size: 0.9em;
+            color: #555;
+            flex-grow: 1;
+        }
+
+        body.dark-mode .book-card .snippet {
+            color: #ccc;
+        }
+
+        /* New: Progress display on book card */
+        .book-progress {
+            font-size: 0.85em;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        body.dark-mode .book-progress {
+            color: var(--accent-color);
+        }
+
+        /* Delete Button for Book Card */
+        .delete-book-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #e74c3c; /* Vermelho */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0.8;
+            transition: opacity 0.3s ease, background-color 0.3s ease;
+        }
+
+        .delete-book-btn:hover {
+            opacity: 1;
+            background-color: #c0392b;
+        }
+
+
+        .no-books {
+            text-align: center;
+            color: #888;
+            padding: 40px;
+            font-size: 1.1em;
+            border: 1px dashed var(--border-color-light);
+            border-radius: 10px;
+            margin: 30px auto;
+            max-width: 600px;
+        }
+
+        body.dark-mode .no-books {
+            border-color: var(--border-color-dark);
+            color: #aaa;
+        }
+
+        .action-buttons {
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+
+        .action-buttons a, .action-buttons button {
+            background: linear-gradient(to right, #007bff, #0056b3);
+            color: white;
+            padding: 15px 35px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.1em;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .action-buttons a:hover, .action-buttons button:hover {
+            background: linear-gradient(to right, #0056b3, #003d7a);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .action-buttons .secondary-button {
+            background: linear-gradient(to right, #6c757d, #5a6268);
+        }
+
+        .action-buttons .secondary-button:hover {
+            background: linear-gradient(to right, #5a6268, #495057);
+        }
+
+        /* Full Book Modal */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1001; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .modal-content {
+            background-color: var(--card-background-light);
+            margin: auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            position: relative;
+            max-height: 90vh; /* Limit height for scrolling */
+            overflow-y: auto; /* Enable scrolling for book content */
+            display: flex; /* Use flex for internal layout */
+            flex-direction: column;
+        }
+
+        body.dark-mode .modal-content {
+            background-color: var(--card-background-dark);
+        }
+
+        .close-button {
+            color: var(--secondary-color);
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .close-button {
+            color: var(--text-dark);
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        body.dark-mode .close-button:hover,
+        body.dark-mode .close-button:focus {
+            color: var(--accent-color);
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            font-size: 2em;
+            text-align: center;
+        }
+
+        .modal-content h3 {
+            font-size: 1.2em;
+            text-align: center;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .modal-content p {
+            font-size: 1em;
+            line-height: 1.6;
+            text-align: justify;
+            margin-bottom: 1em;
+            flex-grow: 1; /* Allow content to take available space */
+        }
+
+        /* Pagination Controls */
+        .pagination-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color-light);
+        }
+
+        body.dark-mode .pagination-controls {
+            border-top-color: var(--border-color-dark);
+        }
+
+        .pagination-controls button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        body.dark-mode .pagination-controls button {
+            background-color: var(--accent-color);
+        }
+
+        .pagination-controls button:hover:not(:disabled) {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+
+        body.dark-mode .pagination-controls button:hover:not(:disabled) {
+            background-color: #e68a00;
+        }
+
+        .pagination-controls button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        body.dark-mode .pagination-controls button:disabled {
+            background-color: #555;
+        }
+
+        .pagination-controls span {
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        body.dark-mode .pagination-controls span {
+            color: var(--text-dark);
+        }
+
+        /* New button style for "Marcar como lido" */
+        .mark-read-button {
+            background: linear-gradient(to right, #28a745, #218838); /* Verde mais escuro */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 15px; /* Espaçamento do conteúdo */
+            width: fit-content; /* Ajusta a largura ao conteúdo */
+            align-self: center; /* Centraliza o botão no modal */
+        }
+
+        .mark-read-button:hover {
+            background: linear-gradient(to right, #218838, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+
+        /* Add Book Form */
+        .add-book-form-section {
+            background-color: var(--card-background-light);
+            border: 1px solid var(--border-color-light);
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        body.dark-mode .add-book-form-section {
+            background-color: var(--card-background-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .add-book-form-section h2 {
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        .add-book-form-section form div {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .add-book-form-section label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        body.dark-mode .add-book-form-section label {
+            color: var(--text-dark);
+        }
+
+        .add-book-form-section input[type="text"],
+        .add-book-form-section textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color-light);
+            border-radius: 8px;
+            font-size: 1em;
+            box-sizing: border-box;
+            background-color: var(--background-light);
+            color: var(--text-light);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        body.dark-mode .add-book-form-section input[type="text"],
+        body.dark-mode .add-book-form-section textarea {
+            background-color: #444;
+            border-color: var(--border-color-dark);
+            color: var(--text-dark);
+        }
+
+        .add-book-form-section input[type="text"]:focus,
+        .add-book-form-section textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+            outline: none;
+        }
+
+        body.dark-mode .add-book-form-section input[type="text"]:focus,
+        body.dark-mode .add-book-form-section textarea:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.3);
+        }
+
+        .add-book-form-section textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .add-book-form-section button[type="submit"] {
+            background: linear-gradient(to right, var(--primary-color), #45a049);
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 700;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            letter-spacing: 0.5px;
+        }
+
+        .add-book-form-section button[type="submit"]:hover {
+            background: linear-gradient(to right, #45a049, #3d8c42);
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Toggle Dark Mode Button */
+        .dark-mode-toggle {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px; /* Slightly smaller to fit header */
+            height: 40px; /* Slightly smaller to fit header */
+            font-size: 1.2em; /* Adjusted font size */
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Lighter shadow */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            margin-left: 20px; /* Space from logo */
+        }
+
+        .dark-mode-toggle:hover {
+            background-color: #555;
+            transform: scale(1.1);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            header {
+                padding: 20px 0;
+                margin: 0px -15px 30px -15px;
+            }
+            header h1 {
+                font-size: 2em;
+            }
+            nav {
+                flex-direction: column;
+                gap: 10px;
+                /* REMOVIDO: top: 70px; */
+            }
+            nav a {
+                padding: 8px 10px;
+            }
+            .section-title {
+                font-size: 1.8em;
+            }
+            .book-grid {
+                grid-template-columns: 1fr; /* Single column on small screens */
+            }
+            .book-card {
+                padding: 20px;
+            }
+            .action-buttons a, .action-buttons button {
+                width: calc(100% - 20px);
+                margin: 5px 10px;
+            }
+               *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    html {
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      overflow-x: hidden;
+    }
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    .book-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 30px;
+    }
+    .book-card {
+      padding: 25px;
+      word-wrap: break-word;
+    }
+    .top-header, .navbar, .footer {
+      width: 100%;
+    }
+    .top-header {
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .dark-mode-toggle {
+      margin-top: 10px;
+      align-self: flex-end;
+    }
+    .action-buttons {
+      flex-direction: column;
+    }
+    .action-buttons a, .action-buttons button {
+      width: 100%;
+      max-width: 400px;
+      margin: 10px auto;
+      display: block;
+      text-align: center;
+    }
+    .modal-content {
+      max-width: 95vw;
+      max-height: 90vh;
+    }
+    .add-book-form-section {
+      padding: 20px;
+    }
+    .add-book-form-section input[type="text"],
+    .add-book-form-section textarea {
+      font-size: 1em;
+      width: 100%;
+    }
+    .section-title {
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+    }
+    .book-card h3,
+    .book-card .author,
+    .book-card .snippet,
+    .book-progress {
+      font-size: clamp(0.9rem, 2vw, 1.2rem);
+    }
+    .action-buttons button,
+    .action-buttons a {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      padding: 12px 25px;
+    }
+    .dark-mode-toggle {
+      width: 40px;
+      height: 40px;
+    }
+    @media (max-width: 768px) {
+      .top-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .dark-mode-toggle {
+        align-self: flex-end;
+        margin-left: 0;
+      }
+      .book-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+            .top-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .dark-mode-toggle {
+                margin-left: 0; /* Remove margin on small screens */
+                align-self: flex-end; /* Push to right on small screens */
+            }
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+            .modal-content h2 {
+                font-size: 1.8em;
+            }
+            .modal-content h3 {
+                font-size: 1.1em;
+            }
+            .add-book-form-section {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+            .modal-content h2 {
+                font-size: 1.5em;
+            }
+            .modal-content h3 {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-header">
+        <a href="{{ url_for('index') }}" class="logo">
+            <svg class="logo-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 1H7C5.89543 1 5 1.89543 5 3V23L12 18L19 23V3C19 1.89543 20.1146 1 21 1ZM12 16.1716L7 19.8284V3H19V19.8284L12 16.1716Z" fill-rule="evenodd" clip-rule="evenodd"/>
+                <path d="M12 5C12.5523 5 13 5.44772 13 6V14C13 14.5523 12.5523 15 12 15C11.4477 15 11 14.5523 11 14V6C11 5.44772 11.4477 5 12 5Z"/>
+            </svg>
+            BookJourney
+        </a>
+        <button id="toggle-dark" class="dark-mode-toggle">🌙</button>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Leituras Disponíveis</h1>
+        </header>
+        <nav>
+            <a href="{{ url_for('index') }}">Início</a>
+            <a href="{{ url_for('leitura') }}">Leituras</a>
+            {% if session.get('user_id') %}
+                <a href="{{ url_for('dashboard') }}">Meu Diário de Leitura</a>
+                <a href="{{ url_for('add_book') }}">Adicionar Livro</a>
+                <a href="{{ url_for('logout') }}">Sair</a>
+            {% else %}
+                <a href="{{ url_for('auth') }}">Login/Cadastro</a>
+            {% endif %}
+        </nav>
+
+        <ul class="flash-messages">
+            {% for category, message in get_flashed_messages(with_categories=true) %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+
+        <main>
+            <h2 class="section-title">Explore Nossas Leituras</h2>
+            <div class="book-grid" id="bookGrid">
+                <!-- Books will be loaded here by JavaScript -->
+                {% if community_books %}
+                    {% for book in community_books %}
+                        <div class="book-card" data-book-id="{{ book.id }}" data-contributor-id="{{ book.contributor_id }}">
+                            <h3>{{ book.title }}</h3>
+                            <p class="author">Autor: {{ book.author }}</p>
+                            <p class="snippet">{{ book.snippet }}</p>
+                            <p class="meta-info">
+                                Adicionado por: 
+                                {% if session.get('user_id') == book.contributor_id %}
+                                    Você
+                                {% else %}
+                                    {{ book.contributor_username }}
+                                {% endif %}
+                            </p>
+                            <!-- Exibe a página lida se disponível -->
+                            {% if book.user_progress %}
+                                <p class="book-progress">Você parou na página {{ book.user_progress.current_page + 1 }}</p>
+                            {% endif %}
+                            {% if session.get('user_id') == book.contributor_id or session.get('is_admin') %}
+                                <button class="delete-book-btn" data-book-id="{{ book.id }}" title="Excluir esta leitura">&times;</button>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="no-books">Nenhum livro disponível na biblioteca da comunidade ainda.</p>
+                {% endif %}
+            </div>
+
+            <div class="action-buttons">
+                <button id="showAddBookFormBtn" class="cta-button">Adicionar Nova Leitura</button>
+            </div>
+
+            <div id="addBookFormSection" class="add-book-form-section" style="display: none;">
+                <h2>Adicionar Nova Leitura para a Comunidade</h2>
+                <form id="addBookForm" action="{{ url_for('add_community_book') }}" method="POST">
+                    <div>
+                        <label for="newBookTitle">Título do Livro:</label>
+                        <input type="text" id="newBookTitle" name="title" required>
+                    </div>
+                    <div>
+                        <label for="newBookAuthor">Autor:</label>
+                        <input type="text" id="newBookAuthor" name="author" required>
+                    </div>
+                    <div>
+                        <label for="newBookSnippet">Pequena Descrição (Snippet):</label>
+                        <textarea id="newBookSnippet" name="snippet" rows="3" required></textarea>
+                    </div>
+                    <div>
+                        <label for="newBookContent">Conteúdo Completo do Livro:</label>
+                        <textarea id="newBookContent" name="content" rows="10" required></textarea>
+                    </div>
+                    <button type="submit">Publicar Leitura</button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <!-- Full Book Modal -->
+    <div id="bookModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modalBookTitle"></h2>
+            <h3 id="modalBookAuthor"></h3>
+            <p id="modalBookContent"></p>
+            <div class="pagination-controls">
+                <button id="prevPageBtn">Anterior</button>
+                <span id="pageInfo">Página 1 de 1</span>
+                <button id="nextPageBtn">Próximo</button>
+            </div>
+            {% if session.get('user_id') %}
+                <button id="markReadBtn" class="mark-read-button">Marcar como lido até aqui</button>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Use os dados passados pelo Flask
+        const communityBooksData = {{ community_books | tojson }};
+        // Verifica se o usuário está logado para controlar a visibilidade do botão e salvamento de progresso
+        // Correção: Garante que o valor seja um booleano JavaScript válido.
+        const isUserLoggedIn = {{ 'true' if session.get('user_id') else 'false' }};
+        const loggedInUserId = {{ session.get('user_id') if session.get('user_id') else 'null' }};
+        const isAdmin = {{ 'true' if session.get('is_admin') else 'false' }};
+
+
+        let currentBook = null;
+        let currentPage = 0;
+        const charsPerPage = 1500; // Ajuste este valor para controlar o tamanho da página
+
+        // Elements for pagination
+        const prevPageBtn = document.getElementById('prevPageBtn');
+        const nextPageBtn = document.getElementById('nextPageBtn');
+        const pageInfoSpan = document.getElementById('pageInfo');
+        const markReadBtn = document.getElementById('markReadBtn'); // Novo botão
+
+        // Function to paginate content
+        function paginateContent(text, pageNum, charLimit) {
+            const startIndex = pageNum * charLimit;
+            const endIndex = startIndex + charLimit;
+            return text.substring(startIndex, endIndex);
+        }
+
+        // Function to calculate progress percentage (still needed for backend, but not displayed)
+        function calculateProgressPercentage(currentP, totalChars, charsPerP) {
+            if (totalChars === 0) return 0;
+            const totalPages = Math.ceil(totalChars / charsPerP);
+            if (totalPages === 0) return 0;
+            // Garante que a porcentagem não exceda 100%
+            return Math.min(100, ((currentP + 1) / totalPages) * 100);
+        }
+
+        // Function to save reading progress to the backend
+        async function saveReadingProgress() {
+            // Só salva o progresso se o usuário estiver logado e um livro estiver selecionado
+            if (!isUserLoggedIn || !currentBook) {
+                console.log("Usuário não logado ou livro não selecionado. Progresso não será salvo.");
+                return;
+            }
+
+            const totalPages = Math.ceil(currentBook.content.length / charsPerPage);
+            const progressPercentage = calculateProgressPercentage(currentPage, currentBook.content.length, charsPerPage);
+
+            try {
+                const response = await fetch('/update_reading_progress', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        book_id: currentBook.id,
+                        current_page: currentPage,
+                        progress_percentage: progressPercentage
+                    }),
+                });
+
+                const result = await response.json();
+                if (result.status === 'success') {
+                    console.log('Progresso salvo com sucesso:', result.message);
+                    // Opcionalmente, atualiza o progresso exibido no card do livro na página principal
+                    const card = document.querySelector(`.book-card[data-book-id="${currentBook.id}"]`);
+                    if (card) {
+                        let progressElem = card.querySelector('.book-progress');
+                        if (!progressElem) {
+                            progressElem = document.createElement('p');
+                            progressElem.classList.add('book-progress');
+                            card.appendChild(progressElem);
+                        }
+                        // Atualiza para mostrar a página atual
+                        progressElem.textContent = `Você parou na página ${currentPage + 1}`;
+                    }
+
+                    // ATUALIZA O OBJETO currentBook NO communityBooksData
+                    const bookIndex = communityBooksData.findIndex(b => b.id === currentBook.id);
+                    if (bookIndex !== -1) {
+                        if (!communityBooksData[bookIndex].user_progress) {
+                            communityBooksData[bookIndex].user_progress = {};
+                        }
+                        communityBooksData[bookIndex].user_progress.current_page = currentPage;
+                        communityBooksData[bookIndex].user_progress.progress_percentage = progressPercentage;
+                    }
+
+
+                } else {
+                    console.error('Erro ao salvar progresso:', result.message);
+                }
+            } catch (error) {
+                console.error('Erro na requisição para salvar progresso:', error);
+            }
+        }
+
+        // Function to update modal content and pagination controls
+        function updateModalContent() {
+            if (!currentBook) return;
+
+            const totalPages = Math.ceil(currentBook.content.length / charsPerPage);
+            const pageContent = paginateContent(currentBook.content, currentPage, charsPerPage);
+
+            document.getElementById('modalBookTitle').textContent = currentBook.title;
+            document.getElementById('modalBookAuthor').textContent = `Autor: ${currentBook.author}`;
+            document.getElementById('modalBookContent').textContent = pageContent;
+            pageInfoSpan.textContent = `Página ${currentPage + 1} de ${totalPages}`;
+
+            prevPageBtn.disabled = currentPage === 0;
+            nextPageBtn.disabled = currentPage >= totalPages - 1;
+
+            // Salva o progresso sempre que a página muda
+            saveReadingProgress();
+        }
+
+        // Event listeners for pagination buttons
+        prevPageBtn.addEventListener('click', () => {
+            if (currentPage > 0) {
+                currentPage--;
+                updateModalContent();
+            }
+        });
+
+        nextPageBtn.addEventListener('click', () => {
+            const totalPages = Math.ceil(currentBook.content.length / charsPerPage);
+            if (currentPage < totalPages - 1) {
+                currentPage++;
+                updateModalContent();
+            }
+        });
+
+        // Modal elements
+        const bookModal = document.getElementById('bookModal');
+        const closeButton = document.querySelector('.close-button');
+
+        // Function to open the book modal
+        function openBookModal(book) {
+            currentBook = book;
+            // Define a página atual para o progresso salvo se disponível, caso contrário, 0
+            // E garante que a página não seja maior que o número total de páginas
+            const totalPages = Math.ceil(currentBook.content.length / charsPerPage);
+            currentPage = (book.user_progress && book.user_progress.current_page !== undefined) ? book.user_progress.current_page : 0;
+            if (currentPage >= totalPages) { // Se a página salva for maior que o total de páginas, volta para a última página
+                currentPage = totalPages > 0 ? totalPages - 1 : 0;
+            }
+            updateModalContent();
+            bookModal.style.display = 'flex'; // Usa flex para centralizar o modal
+        }
+
+        closeButton.addEventListener('click', () => {
+            bookModal.style.display = 'none';
+            saveReadingProgress(); // Salva o progresso ao fechar o modal
+        });
+
+        // Close modal if clicked outside content
+        bookModal.addEventListener('click', (event) => {
+            if (event.target === bookModal) {
+                bookModal.style.display = 'none';
+                saveReadingProgress(); // Salva o progresso ao fechar o modal
+            }
+        });
+
+        // Event listener for the new "Marcar como lido até aqui" button
+        if (markReadBtn) { // Verifica se o botão existe (só aparece se o usuário estiver logado)
+            markReadBtn.addEventListener('click', () => {
+                saveReadingProgress(); // Salva o progresso da página atual
+                // Não usar alert(), usar uma mensagem na interface
+                // showFlashMessage('Progresso marcado com sucesso!', 'success'); // LINHA REMOVIDA
+            });
+        }
+
+        // Função para exibir mensagens flash na interface (substituindo alert)
+        function showFlashMessage(message, type) {
+            const flashMessagesContainer = document.querySelector('.flash-messages');
+            if (flashMessagesContainer) {
+                const li = document.createElement('li');
+                li.classList.add(type);
+                li.textContent = message;
+                flashMessagesContainer.appendChild(li);
+
+                setTimeout(() => {
+                    li.classList.add('fade-out');
+                    li.addEventListener('transitionend', () => {
+                        li.remove();
+                    });
+                }, 3000);
+            }
+        }
+
+
+        // Dark Mode Toggle Logic
+        const toggleBtn = document.getElementById('toggle-dark');
+        const body = document.body;
+
+        // Check for saved dark mode preference on load
+        if (localStorage.getItem('dark-mode') === 'true') {
+          body.classList.add('dark-mode');
+        }
+
+        // Toggle dark mode on button click
+        toggleBtn.addEventListener('click', () => {
+          body.classList.toggle('dark-mode');
+          // Save preference to localStorage
+          if (body.classList.contains('dark-mode')) {
+            localStorage.setItem('dark-mode', 'true');
+          } else {
+            localStorage.setItem('dark-mode', 'false');
+          }
+        });
+
+        // Add event listeners to dynamically loaded book cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const bookCards = document.querySelectorAll('.book-card');
+            bookCards.forEach(card => {
+                card.addEventListener('click', (event) => {
+                    // Impede que o clique no botão de exclusão propague para o card
+                    if (event.target.classList.contains('delete-book-btn')) {
+                        return;
+                    }
+                    const bookId = parseInt(card.dataset.bookId);
+                    const book = communityBooksData.find(b => b.id === bookId);
+                    if (book) {
+                        openBookModal(book);
+                    }
+                });
+            });
+
+            // Add event listeners for delete buttons
+            const deleteButtons = document.querySelectorAll('.delete-book-btn');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    event.stopPropagation(); // Impede que o clique no botão abra o modal
+                    const bookId = parseInt(button.dataset.bookId);
+                    const card = button.closest('.book-card');
+                    const contributorId = parseInt(card.dataset.contributorId);
+
+                    console.log('ID do usuário logado:', loggedInUserId);
+                    console.log('ID do contribuidor do livro:', contributorId);
+                    console.log('É administrador:', isAdmin);
+
+                    if (confirm('Tem certeza que deseja remover esta leitura da comunidade?')) {
+                        // Cria um formulário dinamicamente para enviar a requisição POST
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = `/delete_community_book/${bookId}`;
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            });
+
+
+            // Add New Book Form Logic
+            const showAddBookFormBtn = document.getElementById('showAddBookFormBtn');
+            const addBookFormSection = document.getElementById('addBookFormSection');
+            
+            // Só mostra o botão "Adicionar Nova Leitura" se o usuário estiver logado
+            if (!isUserLoggedIn) {
+                showAddBookFormBtn.style.display = 'none';
+            } else {
+                showAddBookFormBtn.addEventListener('click', () => {
+                    addBookFormSection.style.display = 'block';
+                    showAddBookFormBtn.style.display = 'none'; // Esconde o botão depois de mostrar o formulário
+                });
+            }
+
+            // Flash messages fade out logic
+            const flashMessages = document.querySelector('.flash-messages');
+            if (flashMessages && flashMessages.children.length > 0) {
+                setTimeout(() => {
+                    flashMessages.classList.add('fade-out');
+                    flashMessages.addEventListener('transitionend', () => {
+                        flashMessages.remove();
+                    });
+                }, 3000); // 3 segundos antes de desaparecer
+            }
+        });
+    </script>
+</body>
+</html>

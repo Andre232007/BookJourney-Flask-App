@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookJourney - Dashboard do Leitor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        :root {
+            --primary-color: #4CAF50; /* Verde vibrante */
+            --secondary-color: #333; /* Cinza escuro */
+            --accent-color: #f39c12; /* Dourado para estrelas */
+            --background-light: #f6f5ee; /* Creme claro */
+            --background-dark: #2c3e50; /* Azul escuro para modo noturno */
+            --text-light: #333;
+            --text-dark: #ecf0f1;
+            --card-background-light: #fff;
+            --card-background-dark: #34495e;
+            --border-color-light: #ddd;
+            --border-color-dark: #555;
+            --danger-color: #dc3545;
+            --danger-hover-color: #c82333;
+            --edit-color: #007bff;
+            --edit-hover-color: #0056b3;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--background-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            transition: background 0.3s ease, color 0.3s ease;
+            color: var(--text-light);
+        }
+
+        body.dark-mode {
+            background-color: var(--background-dark);
+            color: var(--text-dark);
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3 {
+            color: var(--accent-color); /* Cores mais claras no modo noturno */
+        }
+
+        /* Top Header for Logo and Company Name (similar to index.html) */
+        .top-header {
+            background-color: var(--card-background-light);
+            width: 100%;
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color-light);
+            z-index: 1002; /* Above navbar */
+            position: sticky;
+            top: 0;
+        }
+
+        body.dark-mode .top-header {
+            background-color: var(--card-background-dark);
+            border-color: var(--border-color-dark);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--primary-color);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .logo {
+            color: var(--accent-color);
+        }
+
+        .logo:hover {
+            color: #3d8c42;
+        }
+
+        body.dark-mode .logo:hover {
+            color: #e68a00;
+        }
+
+        .logo-icon {
+            width: 30px;
+            height: 30px;
+            fill: var(--primary-color);
+            transition: fill 0.3s ease;
+        }
+
+        body.dark-mode .logo-icon {
+            fill: var(--accent-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 20px auto;
+            padding: 30px; /* Aumentado o padding */
+            background-color: var(--card-background-light);
+            border-radius: 12px; /* Cantos mais arredondados */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15); /* Sombra mais pronunciada */
+            box-sizing: border-box;
+        }
+
+        body.dark-mode .container {
+            background-color: var(--card-background-dark);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        header {
+            background: linear-gradient(to right, rgba(0, 242, 96, 0.9), rgba(76, 162, 205, 0.9));
+            color: white;
+            padding: 30px 0; /* Mais padding */
+            text-align: center;
+            border-radius: 12px 12px 0 0; /* Cantos arredondados */
+            margin: -30px -30px 30px -30px; /* Extende para as bordas do container */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2.5em; /* Tamanho maior para o título */
+            margin: 0;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: var(--secondary-color);
+            padding: 15px 0;
+            border-radius: 10px; /* Cantos arredondados */
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            /* REMOVIDO: position: sticky; */
+            /* REMOVIDO: top: 60px; */
+            z-index: 1000;
+        }
+
+        nav a {
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: #555;
+        }
+
+        .flash-messages {
+            list-style: none;
+            padding: 0;
+            margin: 20px auto; /* Centralize */
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            opacity: 1; /* Inicialmente visível */
+            transition: opacity 0.5s ease-out; /* Transição para o fade out */
+        }
+
+        .flash-messages.fade-out {
+            opacity: 0;
+        }
+
+        .flash-messages li {
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .flash-messages li.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .flash-messages li.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        main {
+            width: 100%;
+            padding: 0;
+        }
+
+        .dashboard-card {
+            background-color: var(--card-background-light);
+            border: 1px solid var(--border-color-light);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        body.dark-mode .dashboard-card {
+            background-color: var(--card-background-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .dashboard-card h2 {
+            font-size: 2em;
+            margin-top: 0;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .dashboard-card h2::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        body.dark-mode .dashboard-card h2::after {
+            background-color: var(--accent-color);
+        }
+
+        .book-section {
+            margin-bottom: 40px;
+        }
+
+        .book-section h3 {
+            font-size: 1.8em;
+            color: var(--secondary-color);
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--border-color-light);
+            padding-bottom: 10px;
+            text-align: center; /* Center section titles */
+        }
+
+        body.dark-mode .book-section h3 {
+            color: var(--text-dark);
+            border-bottom-color: var(--border-color-dark);
+        }
+
+        .book-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .book-entry-card {
+            background-color: var(--background-light);
+            border: 1px solid var(--border-color-light);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            text-align: left;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        body.dark-mode .book-entry-card {
+            background-color: #3f586e;
+            border-color: #666;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .book-entry-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+
+        .book-entry-card h4 {
+            font-size: 1.4em;
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+
+        body.dark-mode .book-entry-card h4 {
+            color: var(--accent-color);
+        }
+
+        .book-entry-card p {
+            margin: 5px 0;
+            font-size: 0.95em;
+            color: #555;
+        }
+
+        body.dark-mode .book-entry-card p {
+            color: #ccc;
+        }
+
+        .book-entry-card .author {
+            font-style: italic;
+        }
+
+        .book-entry-card .status {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .book-entry-card .rating {
+            color: var(--accent-color);
+            font-size: 1.1em;
+        }
+
+        .book-entry-card .progress {
+            font-size: 0.9em;
+            color: #777;
+        }
+
+        .book-entry-card .dates {
+            font-size: 0.85em;
+            color: #888;
+        }
+
+        .book-entry-card .notes {
+            margin-top: 15px;
+            border-top: 1px dashed var(--border-color-light);
+            padding-top: 15px;
+            font-size: 0.85em;
+            color: #666;
+            flex-grow: 1; /* Allow notes to take up remaining space */
+        }
+
+        body.dark-mode .book-entry-card .notes {
+            border-top-color: var(--border-color-dark);
+            color: #bbb;
+        }
+
+        .book-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end; /* Alinha botões à direita */
+        }
+
+        .book-actions a, .book-actions button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .book-actions .edit-btn {
+            background-color: var(--edit-color);
+            color: white;
+        }
+
+        .book-actions .edit-btn:hover {
+            background-color: var(--edit-hover-color);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .book-actions .delete-btn {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .book-actions .delete-btn:hover {
+            background-color: var(--danger-hover-color);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn-voltar {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 15px 35px;
+            background: linear-gradient(to right, #007bff, #0056b3);
+            color: white;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            letter-spacing: 0.5px;
+        }
+
+        .btn-voltar:hover {
+            background: linear-gradient(to right, #0056b3, #003d7a);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Toggle Dark Mode Button */
+        .dark-mode-toggle {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px; /* Slightly smaller to fit header */
+            height: 40px; /* Slightly smaller to fit header */
+            font-size: 1.2em; /* Adjusted font size */
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Lighter shadow */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            margin-left: 20px; /* Space from logo */
+        }
+
+        .dark-mode-toggle:hover {
+            background-color: #555;
+            transform: scale(1.1);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                width: 95%;
+            }
+            header {
+                padding: 20px 0;
+                margin: -20px -20px 20px -20px;
+            }
+            header h1 {
+                font-size: 2em;
+            }
+            nav {
+                flex-direction: column;
+                gap: 10px;
+                /* REMOVIDO: top: 70px; */
+            }
+            nav a {
+                padding: 8px 10px;
+            }
+            .book-list {
+                grid-template-columns: 1fr;
+            }
+            .book-entry-card {
+                padding: 15px;
+            }
+            .btn-voltar {
+                width: calc(100% - 40px);
+                padding: 12px 20px;
+                font-size: 1em;
+            }
+            .top-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .dark-mode-toggle {
+                margin-left: 0; /* Remove margin on small screens */
+                align-self: flex-end; /* Push to right on small screens */
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+            .book-section h3 {
+                font-size: 1.5em;
+            }
+        }
+          *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--background-light);
+      color: var(--text-light);
+      width: 100%;
+    }
+    :root {
+      --primary-color: #4CAF50;
+      --secondary-color: #333;
+      --accent-color: #f39c12;
+      --background-light: #f6f5ee;
+      --background-dark: #2c3e50;
+      --text-light: #333;
+      --text-dark: #ecf0f1;
+      --card-background-light: #fff;
+      --card-background-dark: #34495e;
+      --border-color-light: #ddd;
+      --border-color-dark: #555;
+      --danger-color: #dc3545;
+      --danger-hover-color: #c82333;
+    }
+    body.dark-mode {
+      background-color: var(--background-dark);
+      color: var(--text-dark);
+    }
+    h1, h2, h3 {
+      font-family: 'Playfair Display', serif;
+      color: var(--primary-color);
+    }
+    body.dark-mode h1, body.dark-mode h2, body.dark-mode h3 {
+      color: var(--accent-color);
+    }
+    .top-header {
+      background-color: var(--card-background-light);
+      width: 100%;
+      padding: 15px 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color-light);
+      position: sticky;
+      top: 0;
+      z-index: 1002;
+    }
+    body.dark-mode .top-header {
+      background-color: var(--card-background-dark);
+      border-color: var(--border-color-dark);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+      text-decoration: none;
+      color: var(--primary-color);
+    }
+    .logo-icon {
+      width: 30px;
+      height: 30px;
+      fill: currentColor;
+    }
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+    header {
+      background: linear-gradient(to right, rgba(0, 242, 96, 0.9), rgba(76, 162, 205, 0.9));
+      color: white;
+      padding: 2rem;
+      border-radius: 12px 12px 0 0;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    header h1 {
+      font-size: clamp(1.5rem, 5vw, 2.5rem);
+      margin: 0;
+    }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      background-color: var(--secondary-color);
+      padding: 1rem;
+      border-radius: 10px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 10px 15px;
+      font-weight: 600;
+      border-radius: 5px;
+      background: #444;
+      transition: background 0.3s ease;
+    }
+    nav a:hover {
+      background: #555;
+    }
+    .flash-messages {
+      list-style: none;
+      padding: 0;
+      margin: 20px auto;
+      max-width: 800px;
+      text-align: center;
+    }
+    .flash-messages li {
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .flash-messages li.success {
+      background: #d4edda;
+      color: #155724;
+    }
+    .flash-messages li.error {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border-color-light);
+      text-align: left;
+    }
+    th {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    .delete-button {
+      background-color: var(--danger-color);
+      color: white;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .delete-button:hover {
+      background-color: var(--danger-hover-color);
+    }
+    .back-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin: 2rem 0;
+    }
+    .back-buttons a {
+      background: linear-gradient(to right, #007bff, #0056b3);
+      color: white;
+      padding: 12px 25px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .dark-mode-toggle {
+      background: var(--secondary-color);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 1.2em;
+      cursor: pointer;
+    }
+    @media (max-width: 768px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+      thead tr {
+        display: none;
+      }
+      tr {
+        margin-bottom: 15px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        padding: 10px;
+      }
+      td {
+        position: relative;
+        padding-left: 50%;
+        text-align: right;
+        border: none;
+        border-bottom: 1px solid #ccc;
+      }
+      td:before {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 45%;
+        white-space: nowrap;
+        font-weight: bold;
+        text-align: left;
+        content: attr(data-label);
+      }
+    }
+    @media (max-width: 400px) {
+      .logo {
+        font-size: 1.2rem;
+      }
+      .dark-mode-toggle {
+        width: 35px;
+        height: 35px;
+        font-size: 1em;
+      }
+    }
+    </style>
+</head>
+<body>
+    <div class="top-header">
+        <a href="{{ url_for('index') }}" class="logo">
+            <svg class="logo-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 1H7C5.89543 1 5 1.89543 5 3V23L12 18L19 23V3C19 1.89543 20.1146 1 21 1ZM12 16.1716L7 19.8284V3H19V19.8284L12 16.1716Z" fill-rule="evenodd" clip-rule="evenodd"/>
+                <path d="M12 5C12.5523 5 13 5.44772 13 6V14C13 14.5523 12.5523 15 12 15C11.4477 15 11 14.5523 11 14V6C11 5.44772 11.4477 5 12 5Z"/>
+            </svg>
+            BookJourney
+        </a>
+        <button id="toggle-dark" class="dark-mode-toggle">🌙</button>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Dashboard do Leitor</h1>
+        </header>
+        <nav>
+            <a href="{{ url_for('index') }}">Início</a>
+            {% if session.get('user_id') %}
+                <a href="{{ url_for('dashboard') }}">Meu Diário de Leitura</a>
+                <a href="{{ url_for('add_book') }}">Adicionar Livro</a>
+                <a href="{{ url_for('logout') }}">Sair</a>
+            {% else %}
+                <a href="{{ url_for('auth') }}">Login/Cadastro</a>
+            {% endif %}
+        </nav>
+
+        <ul class="flash-messages">
+            {% for category, message in get_flashed_messages(with_categories=true) %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+
+        <main>
+            <div class="dashboard-card">
+                <h2>Bem-vindo, {{ username }}!</h2>
+                {% if is_admin %}
+                    <p>Você é um administrador. <a href="{{ url_for('list_users') }}" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">Gerenciar Usuários</a></p>
+                {% endif %}
+            </div>
+
+            <div class="book-section">
+                <h3>Livros Lendo Agora</h3>
+                {% if books_data['lendo'] %}
+                    <div class="book-list">
+                        {% for book in books_data['lendo'] %}
+                            <div class="book-entry-card">
+                                <h4>{{ book.title }}</h4>
+                                <p class="author">Autor: {{ book.author }}</p>
+                                <p class="status">Status: Lendo</p>
+                                {% if book.progress_pages %}
+                                    <p class="progress">Páginas Lidas: {{ book.progress_pages }}</p>
+                                {% endif %}
+                                {% if book.progress_percentage %}
+                                    <p class="progress">Progresso: {{ book.progress_percentage }}%</p>
+                                {% endif %}
+                                {% if book.start_date != 'N/A' %}
+                                    <p class="dates">Iniciado em: {{ book.start_date }}</p>
+                                {% endif %}
+                                {% if book.notes %}
+                                    <p class="notes">{{ book.notes }}</p>
+                                {% endif %}
+                                <div class="book-actions">
+                                    <a href="{{ url_for('edit_book_entry', entry_id=book.entry_id) }}" class="edit-btn">Editar</a>
+                                    <button type="button" class="delete-btn" onclick="showConfirmDelete('{{ book.entry_id }}', '{{ book.title }}')">Remover</button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>Nenhum livro sendo lido no momento.</p>
+                {% endif %}
+            </div>
+
+            <div class="book-section">
+                <h3>Livros Desejados</h3>
+                {% if books_data['desejado'] %}
+                    <div class="book-list">
+                        {% for book in books_data['desejado'] %}
+                            <div class="book-entry-card">
+                                <h4>{{ book.title }}</h4>
+                                <p class="author">Autor: {{ book.author }}</p>
+                                <p class="status">Status: Desejado</p>
+                                {% if book.notes %}
+                                    <p class="notes">{{ book.notes }}</p>
+                                {% endif %}
+                                <div class="book-actions">
+                                    <a href="{{ url_for('edit_book_entry', entry_id=book.entry_id) }}" class="edit-btn">Editar</a>
+                                    <button type="button" class="delete-btn" onclick="showConfirmDelete('{{ book.entry_id }}', '{{ book.title }}')">Remover</button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>Nenhum livro na sua lista de desejos.</p>
+                {% endif %}
+            </div>
+
+            <div class="book-section">
+                <h3>Livros Lidos</h3>
+                {% if books_data['lido'] %}
+                    <div class="book-list">
+                        {% for book in books_data['lido'] %}
+                            <div class="book-entry-card">
+                                <h4>{{ book.title }}</h4>
+                                <p class="author">Autor: {{ book.author }}</p>
+                                <p class="status">Status: Lido</p>
+                                {% if book.rating %}
+                                    <p class="rating">Avaliação: {{ '⭐' * book.rating }}</p>
+                                {% endif %}
+                                {% if book.start_date != 'N/A' %}
+                                    <p class="dates">Iniciado em: {{ book.start_date }}</p>
+                                {% endif %}
+                                {% if book.end_date != 'N/A' %}
+                                    <p class="dates">Concluído em: {{ book.end_date }}</p>
+                                {% endif %}
+                                {% if book.notes %}
+                                    <p class="notes">{{ book.notes }}</p>
+                                {% endif %}
+                                <div class="book-actions">
+                                    <a href="{{ url_for('edit_book_entry', entry_id=book.entry_id) }}" class="edit-btn">Editar</a>
+                                    <button type="button" class="delete-btn" onclick="showConfirmDelete('{{ book.entry_id }}', '{{ book.title }}')">Remover</button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>Nenhum livro lido ainda.</p>
+                {% endif %}
+            </div>
+
+            <div class="dashboard-card" style="margin-top: 50px;">
+                <h2>Minha Meta de Leitura</h2>
+                <p>{{ reading_goal }}</p>
+                <p>Em breve: defina e acompanhe suas metas!</p>
+            </div>
+            
+            <a href="{{ url_for('index') }}" class="btn-voltar">← Voltar para Página Inicial</a>
+        </main>
+    </div>
+
+    <!-- Custom Confirmation Modal -->
+    <div id="confirmModal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+        <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 400px; border-radius: 10px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+            <p style="font-size: 1.1em; margin-bottom: 20px; color: var(--text-light);" id="confirmMessage">Tem certeza que deseja remover este livro do seu diário?</p>
+            <div style="display: flex; justify-content: center; gap: 15px;">
+                <button onclick="confirmDelete()" style="background-color: var(--danger-color); color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 1em;">Sim, Remover</button>
+                <button onclick="hideConfirmDelete()" style="background-color: #6c757d; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 1em;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentEntryIdToDelete = null;
+
+        function showConfirmDelete(entryId, bookTitle) {
+            currentEntryIdToDelete = entryId;
+            document.getElementById('confirmMessage').textContent = `Tem certeza que deseja remover "${bookTitle}" do seu diário?`;
+            document.getElementById('confirmModal').style.display = 'block';
+        }
+
+        function hideConfirmDelete() {
+            document.getElementById('confirmModal').style.display = 'none';
+            currentEntryIdToDelete = null;
+        }
+
+        function confirmDelete() {
+            if (currentEntryIdToDelete) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `{{ url_for('delete_book_entry', entry_id=0) }}`.replace('0', currentEntryIdToDelete);
+                document.body.appendChild(form);
+                form.submit();
+            }
+            hideConfirmDelete();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashMessages = document.querySelector('.flash-messages');
+            if (flashMessages && flashMessages.children.length > 0) {
+                setTimeout(() => {
+                    flashMessages.classList.add('fade-out');
+                    flashMessages.addEventListener('transitionend', () => {
+                        flashMessages.remove();
+                    });
+                }, 3000); // 3 seconds before fading out
+            }
+
+            // Dark mode toggle logic for dashboard
+            const toggleBtn = document.getElementById('toggle-dark');
+            const body = document.body;
+
+            // Check for saved dark mode preference on load
+            if (localStorage.getItem('dark-mode') === 'true') {
+                body.classList.add('dark-mode');
+                toggleBtn.textContent = '☀️'; // Change icon to sun
+            }
+
+            toggleBtn.addEventListener('click', () => {
+                body.classList.toggle('dark-mode');
+                // Save preference to localStorage
+                if (body.classList.contains('dark-mode')) {
+                    localStorage.setItem('dark-mode', 'true');
+                    toggleBtn.textContent = '☀️'; // Change icon to sun
+                } else {
+                    localStorage.setItem('dark-mode', 'false');
+                    toggleBtn.textContent = '🌙'; // Change icon to moon
+                }
+            });
+        });
+    </script>
+</body>
+</html>

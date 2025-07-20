@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Cadastro Animado</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+    </style>
+</head>
+<body>
+    <button id="toggle-theme" aria-label="Alternar tema" style="position: absolute; top: 20px; right: 20px; z-index: 200;">🌙</button>
+
+    <div class="container">
+        <div id="message-area" class="message-area"></div>
+
+        <div class="form-container sign-up-container">
+            <form action="/register" method="POST">
+                <h1>Criar Conta</h1>
+            
+                <input type="text" placeholder="Nome" name="username" required />
+                <input type="email" placeholder="Email" name="email" required />
+                <input type="password" placeholder="Senha" name="password" required />
+                <button type="submit">Cadastrar</button>
+            </form>
+        </div>
+        <div class="form-container sign-in-container">
+            <form action="/login" method="POST">
+                <h1>Entrar</h1>
+           
+                <input type="email" placeholder="Email" name="email" required />
+                <input type="password" placeholder="Senha" name="password" required />
+                <a href="#">Esqueceu sua senha?</a>
+                <button type="submit">Entrar</button>
+            </form>
+        </div>
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Bem-vindo de volta!</h1>
+                    <p>Para se manter conectado conosco, faça login com suas informações pessoais</p>
+                    <button class="ghost" id="signIn">Entrar</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Olá, Amigo!</h1>
+                    <p>Digite seus dados pessoais e comece sua jornada conosco</p>
+                    <button class="ghost" id="signUp">Cadastrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const toggle = document.getElementById("toggle-theme");
+            // Removido: const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const savedTheme = localStorage.getItem('dark-mode'); // Alterado para 'dark-mode'
+
+            if (savedTheme === 'true') { // Verifica se a string é 'true'
+                document.body.classList.add("dark-mode");
+                toggle.textContent = "☀️";
+            } else { // Adicionado else para garantir que o ícone inicial esteja correto se não for 'true'
+                toggle.textContent = "🌙";
+            }
+
+            toggle.addEventListener("click", () => {
+                document.body.classList.toggle("dark-mode");
+                const isDark = document.body.classList.contains("dark-mode");
+                localStorage.setItem('dark-mode', isDark ? 'true' : 'false'); // Alterado para 'dark-mode' e 'true'/'false'
+                toggle.textContent = isDark ? "☀️" : "🌙";
+            });
+
+            // Flash messages logic (similar to other pages)
+            const messageArea = document.getElementById('message-area');
+            // Assuming Flask flashes messages can be passed to JS or rendered directly.
+            // For demonstration, let's simulate a message if needed.
+            // In a real Flask app, you'd integrate this with get_flashed_messages().
+            // Example:
+            // const flashMessages = {{ get_flashed_messages(with_categories=true) | tojson }};
+            // if (flashMessages.length > 0) {
+            //     const [category, message] = flashMessages[0]; // Take the first message
+            //     messageArea.textContent = message;
+            //     messageArea.classList.add('show', category);
+            //     setTimeout(() => {
+            //         messageArea.classList.remove('show');
+            //         messageArea.addEventListener('transitionend', () => {
+            //             messageArea.textContent = '';
+            //             messageArea.classList.remove(category);
+            //         }, { once: true });
+            //     }, 3000);
+            // }
+        });
+    </script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

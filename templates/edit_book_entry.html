@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookJourney - Editar Livro: {{ entry.book.title }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style> *, *::before, *::after {
+        box-sizing: border-box;
+      }
+      html, body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        font-family: 'Montserrat', sans-serif;
+        background-color: var(--background-light);
+        color: var(--text-light);
+      }
+      :root {
+        --primary-color: #4CAF50;
+        --secondary-color: #333;
+        --accent-color: #f39c12;
+        --background-light: #f6f5ee;
+        --background-dark: #2c3e50;
+        --text-light: #333;
+        --text-dark: #ecf0f1;
+        --card-background-light: #fff;
+        --card-background-dark: #34495e;
+        --border-color-light: #ddd;
+        --border-color-dark: #555;
+        --danger-color: #dc3545;
+        --danger-hover-color: #c82333;
+      }
+      body.dark-mode {
+        background-color: var(--background-dark);
+        color: var(--text-dark);
+      }
+      h1, h2, h3 {
+        font-family: 'Playfair Display', serif;
+        color: var(--primary-color);
+      }
+      body.dark-mode h1, body.dark-mode h2, body.dark-mode h3 {
+        color: var(--accent-color);
+      }
+      .top-header {
+        background-color: var(--card-background-light);
+        width: 100%;
+        padding: 15px 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border-color-light);
+        position: sticky;
+        top: 0;
+        z-index: 1002;
+      }
+      body.dark-mode .top-header {
+        background-color: var(--card-background-dark);
+        border-color: var(--border-color-dark);
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+        text-decoration: none;
+        color: var(--primary-color);
+      }
+      .logo-icon {
+        width: 30px;
+        height: 30px;
+        fill: currentColor;
+      }
+      .container {
+        width: 100%;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 1rem;
+        box-sizing: border-box;
+      }
+      header {
+        background: linear-gradient(to right, rgba(0, 242, 96, 0.9), rgba(76, 162, 205, 0.9));
+        color: white;
+        padding: 2rem;
+        border-radius: 12px 12px 0 0;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      }
+      header h1 {
+        font-size: clamp(1.5rem, 5vw, 2.5rem);
+      }
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        background-color: var(--secondary-color);
+        padding: 1rem;
+        border-radius: 10px;
+      }
+      nav a {
+        color: white;
+        text-decoration: none;
+        padding: 10px 15px;
+        font-weight: 600;
+        border-radius: 5px;
+        background: #444;
+        transition: background 0.3s ease;
+      }
+      nav a:hover {
+        background: #555;
+      }
+      .flash-messages {
+        list-style: none;
+        padding: 0;
+        margin: 20px auto;
+        max-width: 800px;
+        text-align: center;
+      }
+      .flash-messages li {
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 10px;
+      }
+      .flash-messages li.success {
+        background: #d4edda;
+        color: #155724;
+      }
+      .flash-messages li.error {
+        background: #f8d7da;
+        color: #721c24;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th, td {
+        padding: 12px;
+        border-bottom: 1px solid var(--border-color-light);
+        text-align: left;
+      }
+      th {
+        background-color: var(--primary-color);
+        color: white;
+      }
+      .delete-button {
+        background-color: var(--danger-color);
+        color: white;
+        padding: 6px 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .delete-button:hover {
+        background-color: var(--danger-hover-color);
+      }
+      .back-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin: 2rem 0;
+      }
+      .back-buttons a {
+        background: linear-gradient(to right, #007bff, #0056b3);
+        color: white;
+        padding: 12px 25px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 700;
+      }
+      .dark-mode-toggle {
+        background: var(--secondary-color);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        font-size: 1.2em;
+        cursor: pointer;
+      }
+      @media (max-width: 768px) {
+        table, thead, tbody, th, td, tr {
+          display: block;
+        }
+        thead tr {
+          display: none;
+        }
+        tr {
+          margin-bottom: 15px;
+          background: white;
+          border-radius: 10px;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+          padding: 10px;
+        }
+        td {
+          position: relative;
+          padding-left: 50%;
+          text-align: right;
+          border: none;
+          border-bottom: 1px solid #ccc;
+        }
+        td:before {
+          position: absolute;
+          top: 10px;
+          left: 10px;
+          width: 45%;
+          white-space: nowrap;
+          font-weight: bold;
+          text-align: left;
+          content: attr(data-label);
+        }
+      }
+        :root {
+            --primary-color: #4CAF50; /* Verde vibrante */
+            --secondary-color: #333; /* Cinza escuro */
+            --accent-color: #f39c12; /* Dourado para estrelas */
+            --background-light: #f6f5ee; /* Creme claro */
+            --background-dark: #2c3e50; /* Azul escuro para modo noturno */
+            --text-light: #333;
+            --text-dark: #ecf0f1;
+            --card-background-light: #fff;
+            --card-background-dark: #34495e;
+            --border-color-light: #ddd;
+            --border-color-dark: #555;
+            --danger-color: #dc3545; /* Vermelho para ações de perigo */
+            --danger-hover-color: #c82333;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--background-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            transition: background 0.3s ease, color 0.3s ease;
+            color: var(--text-light);
+        }
+
+        body.dark-mode {
+            background-color: var(--background-dark);
+            color: var(--text-dark);
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3 {
+            color: var(--accent-color); /* Cores mais claras no modo noturno */
+        }
+
+        /* Top Header for Logo and Company Name (similar to index.html) */
+        .top-header {
+            background-color: var(--card-background-light);
+            width: 100%;
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color-light);
+            z-index: 1002; /* Above navbar */
+            position: sticky;
+            top: 0;
+        }
+
+        body.dark-mode .top-header {
+            background-color: var(--card-background-dark);
+            border-color: var(--border-color-dark);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--primary-color);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .logo {
+            color: var(--accent-color);
+        }
+
+        .logo:hover {
+            color: #3d8c42;
+        }
+
+        body.dark-mode .logo:hover {
+            color: #e68a00;
+        }
+
+        .logo-icon {
+            width: 30px;
+            height: 30px;
+            fill: var(--primary-color);
+            transition: fill 0.3s ease;
+        }
+
+        body.dark-mode .logo-icon {
+            fill: var(--accent-color);
+        }
+
+        .container {
+            max-width: 700px; /* Aumentado para melhor layout do formulário */
+            width: 90%;
+            margin: 20px auto;
+            padding: 30px; /* Aumentado o padding */
+            background-color: var(--card-background-light);
+            border-radius: 12px; /* Cantos mais arredondados */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15); /* Sombra mais pronunciada */
+            box-sizing: border-box;
+        }
+
+        body.dark-mode .container {
+            background-color: var(--card-background-dark);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        header {
+            background: linear-gradient(to right, rgba(0, 242, 96, 0.9), rgba(76, 162, 205, 0.9));
+            color: white;
+            padding: 30px 0; /* Mais padding */
+            text-align: center;
+            border-radius: 12px 12px 0 0; /* Cantos arredondados */
+            margin: -30px -30px 30px -30px; /* Extende para as bordas do container */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2.5em; /* Tamanho maior para o título */
+            margin: 0;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: var(--secondary-color);
+            padding: 15px 0;
+            border-radius: 10px; /* Cantos arredondados */
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            /* REMOVIDO: position: sticky; */
+            /* REMOVIDO: top: 60px; */
+            z-index: 1000;
+        }
+
+        nav a {
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: #555;
+        }
+
+        .flash-messages {
+            list-style: none;
+            padding: 0;
+            margin: 20px auto; /* Centralize */
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            opacity: 1; /* Inicialmente visível */
+            transition: opacity 0.5s ease-out; /* Transição para o fade out */
+        }
+
+        .flash-messages.fade-out {
+            opacity: 0;
+        }
+
+        .flash-messages li {
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .flash-messages li.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .flash-messages li.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        form div {
+            margin-bottom: 20px; /* Mais espaço entre os campos */
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 8px; /* Mais espaço para o label */
+            font-weight: 600; /* Mais destaque */
+            color: var(--text-light);
+            font-size: 1.05em;
+        }
+
+        body.dark-mode form label {
+            color: var(--text-dark);
+        }
+
+        form input[type="text"],
+        form select,
+        form textarea,
+        form input[type="number"],
+        form input[type="date"] {
+            width: 100%;
+            padding: 12px; /* Mais padding */
+            border: 1px solid var(--border-color-light);
+            border-radius: 8px; /* Cantos mais arredondados */
+            font-size: 1em;
+            box-sizing: border-box;
+            background-color: var(--background-light);
+            color: var(--text-light);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        body.dark-mode form input[type="text"],
+        body.dark-mode form select,
+        body.dark-mode form textarea,
+        body.dark-mode form input[type="number"],
+        body.dark-mode form input[type="date"] {
+            background-color: #444;
+            border-color: var(--border-color-dark);
+            color: var(--text-dark);
+        }
+
+        form input[type="text"]:focus,
+        form select:focus,
+        form textarea:focus,
+        form input[type="number"]:focus,
+        form input[type="date"]:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3); /* Sombra de foco verde */
+            outline: none;
+        }
+
+        body.dark-mode form input[type="text"]:focus,
+        body.dark-mode form select:focus,
+        body.dark-mode form textarea:focus,
+        body.dark-mode form input[type="number"]:focus,
+        body.dark-mode form input[type="date"]:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.3);
+        }
+
+        form textarea {
+            resize: vertical;
+            min-height: 100px; /* Altura mínima maior */
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px; /* Tamanho do checkbox */
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+            accent-color: var(--primary-color); /* Cor do checkbox */
+        }
+
+        body.dark-mode .checkbox-group input[type="checkbox"] {
+            accent-color: var(--accent-color);
+        }
+
+        .form-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Espaçamento entre os botões */
+            margin-top: 30px;
+        }
+
+        .form-buttons button {
+            background: linear-gradient(to right, var(--primary-color), #45a049);
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 30px; /* Botões arredondados */
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            letter-spacing: 0.5px;
+        }
+
+        .form-buttons button:hover {
+            background: linear-gradient(to right, #45a049, #3d8c42);
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+
+        .form-buttons .delete-button {
+            background: linear-gradient(to right, var(--danger-color), var(--danger-hover-color));
+        }
+
+        .form-buttons .delete-button:hover {
+            background: linear-gradient(to right, var(--danger-hover-color), #b31f2c);
+        }
+
+        /* Toggle Dark Mode Button */
+        .dark-mode-toggle {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px; /* Slightly smaller to fit header */
+            height: 40px; /* Slightly smaller to fit header */
+            font-size: 1.2em; /* Adjusted font size */
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Lighter shadow */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            margin-left: 20px; /* Space from logo */
+        }
+
+        .dark-mode-toggle:hover {
+            background-color: #555;
+            transform: scale(1.1);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                width: 95%;
+            }
+            header {
+                padding: 20px 0;
+                margin: -20px -20px 20px -20px;
+            }
+            header h1 {
+                font-size: 2em;
+            }
+            nav {
+                flex-direction: column;
+                gap: 10px;
+                /* REMOVIDO: top: 70px; */
+            }
+            nav a {
+                padding: 8px 10px;
+            }
+            .form-buttons button {
+                padding: 12px 20px;
+                font-size: 1em;
+            }
+            .top-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .dark-mode-toggle {
+                margin-left: 0; /* Remove margin on small screens */
+                align-self: flex-end; /* Push to right on small screens */
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-header">
+        <a href="{{ url_for('index') }}" class="logo">
+            <svg class="logo-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 1H7C5.89543 1 5 1.89543 5 3V23L12 18L19 23V3C19 1.89543 20.1146 1 21 1ZM12 16.1716L7 19.8284V3H19V19.8284L12 16.1716Z" fill-rule="evenodd" clip-rule="evenodd"/>
+                <path d="M12 5C12.5523 5 13 5.44772 13 6V14C13 14.5523 12.5523 15 12 15C11.4477 15 11 14.5523 11 14V6C11 5.44772 11.4477 5 12 5Z"/>
+            </svg>
+            BookJourney
+        </a>
+        <button id="toggle-dark" class="dark-mode-toggle">🌙</button>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Editar Livro: {{ entry.book.title }}</h1>
+        </header>
+        <nav>
+            <a href="{{ url_for('index') }}">Início</a>
+            {% if session.get('user_id') %}
+                <a href="{{ url_for('dashboard') }}">Meu Diário de Leitura</a>
+                <a href="{{ url_for('add_book') }}">Adicionar Livro</a>
+                <a href="{{ url_for('logout') }}">Sair</a>
+            {% else %}
+                <a href="{{ url_for('auth') }}">Login/Cadastro</a>
+            {% endif %}
+        </nav>
+
+        <ul class="flash-messages">
+            {% for category, message in get_flashed_messages(with_categories=true) %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+
+        <main>
+            <form action="{{ url_for('edit_book_entry', entry_id=entry.id) }}" method="POST">
+                <div>
+                    <label for="title">Título do Livro:</label>
+                    <input type="text" id="title" name="title" value="{{ entry.book.title }}" readonly disabled>
+                </div>
+                <div>
+                    <label for="author">Autor:</label>
+                    <input type="text" id="author" name="author" value="{{ entry.book.author }}" readonly disabled>
+                </div>
+                <div>
+                    <label for="status">Status da Leitura:</label>
+                    <select id="status" name="status" required>
+                        <option value="desejado" {% if entry.status == 'desejado' %}selected{% endif %}>Desejado</option>
+                        <option value="lendo" {% if entry.status == 'lendo' %}selected{% endif %}>Lendo</option>
+                        <option value="lido" {% if entry.status == 'lido' %}selected{% endif %}>Lido</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="notes">Notas/Comentários:</label>
+                    <textarea id="notes" name="notes">{{ entry.notes or '' }}</textarea>
+                </div>
+                <div>
+                    <label for="rating">Avaliação (1-5 estrelas):</label>
+                    <input type="number" id="rating" name="rating" min="1" max="5" value="{{ entry.rating or '' }}">
+                </div>
+                <div>
+                    <label for="progress_pages">Páginas Lidas:</label>
+                    <input type="number" id="progress_pages" name="progress_pages" value="{{ entry.progress_pages or '' }}">
+                </div>
+                <div>
+                    <label for="progress_percentage">Progresso (%):</label>
+                    <input type="number" id="progress_percentage" name="progress_percentage" min="0" max="100" value="{{ entry.progress_percentage or '' }}">
+                </div>
+                <div>
+                    <label for="start_date">Data de Início:</label>
+                    <input type="date" id="start_date" name="start_date" value="{{ entry.start_date.strftime('%Y-%m-%d') if entry.start_date else '' }}">
+                </div>
+                <div>
+                    <label for="end_date">Data de Conclusão:</label>
+                    <input type="date" id="end_date" name="end_date" value="{{ entry.end_date.strftime('%Y-%m-%d') if entry.end_date else '' }}">
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="is_public_recommendation" name="is_public_recommendation" {% if entry.is_public_recommendation %}checked{% endif %}>
+                    <label for="is_public_recommendation">Tornar esta uma recomendação pública?</label>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit">Salvar Alterações</button>
+                    <button type="button" class="delete-button" onclick="showConfirmDelete()">Deletar Livro</button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Custom Confirmation Modal -->
+    <div id="confirmModal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+        <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 400px; border-radius: 10px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+            <p style="font-size: 1.1em; margin-bottom: 20px; color: var(--text-light);">Tem certeza que deseja deletar este livro do seu diário?</p>
+            <div style="display: flex; justify-content: center; gap: 15px;">
+                <button onclick="confirmDelete()" style="background-color: var(--danger-color); color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 1em;">Sim, Deletar</button>
+                <button onclick="hideConfirmDelete()" style="background-color: #6c757d; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 1em;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showConfirmDelete() {
+            document.getElementById('confirmModal').style.display = 'block';
+        }
+
+        function hideConfirmDelete() {
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+
+        function confirmDelete() {
+            hideConfirmDelete();
+            // Submete o formulário de exclusão
+            document.getElementById('deleteForm').submit();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashMessages = document.querySelector('.flash-messages');
+            if (flashMessages && flashMessages.children.length > 0) {
+                setTimeout(() => {
+                    flashMessages.classList.add('fade-out');
+                    flashMessages.addEventListener('transitionend', () => {
+                        flashMessages.remove();
+                    });
+                }, 3000); // 3 seconds before fading out
+            }
+
+            // Dark mode toggle logic for edit_book_entry.html
+            const toggleBtn = document.getElementById('toggle-dark');
+            const body = document.body;
+
+            // Check for saved dark mode preference on load
+            if (localStorage.getItem('dark-mode') === 'true') {
+                body.classList.add('dark-mode');
+                toggleBtn.textContent = '☀️'; // Change icon to sun
+            }
+
+            toggleBtn.addEventListener('click', () => {
+                body.classList.toggle('dark-mode');
+                // Save preference to localStorage
+                if (body.classList.contains('dark-mode')) {
+                    localStorage.setItem('dark-mode', 'true');
+                    toggleBtn.textContent = '☀️'; // Change icon to sun
+                } else {
+                    localStorage.setItem('dark-mode', 'false');
+                    toggleBtn.textContent = '🌙'; // Change icon to moon
+                }
+            });
+        });
+    </script>
+    <!-- Hidden form for deletion -->
+    <form id="deleteForm" action="{{ url_for('delete_book_entry', entry_id=entry.id) }}" method="POST" style="display: none;"></form>
+</body>
+</html>

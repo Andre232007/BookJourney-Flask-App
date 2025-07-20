@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BookJourney - Sua Jornada Literária Começa Aqui</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-dxOPkx..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+ <style>
+    :root {
+      --primary-color: #4CAF50; /* Verde vibrante */
+      --secondary-color: #333; /* Cinza escuro */
+      --accent-color: #f39c12; /* Dourado para estrelas */
+      --background-light: #f6f5ee; /* Creme claro */
+      --background-dark: #2c3e50; /* Azul escuro para modo noturno */
+      --text-light: #333;
+      --text-dark: #ecf0f1;
+      --card-background-light: #fff;
+      --card-background-dark: #34495e;
+      --border-color-light: #ddd;
+      --border-color-dark: #555;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--background-light);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      transition: background 0.3s ease, color 0.3s ease;
+      color: var(--text-light);
+    }
+
+    body.dark-mode {
+      background-color: var(--background-dark);
+      color: var(--text-dark);
+    }
+
+    h1, h2, h3 {
+      font-family: 'Playfair Display', serif;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+    }
+
+    body.dark-mode h1,
+    body.dark-mode h2,
+    body.dark-mode h3 {
+      color: var(--accent-color); /* Cores mais claras no modo noturno */
+    }
+
+    .container {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+
+    /* Top Header for Logo and Company Name */
+    .top-header {
+        background-color: var(--card-background-light);
+        width: 100%;
+        padding: 15px 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border-color-light);
+        z-index: 1002; /* Above navbar */
+        position: sticky; /* Mantém o cabeçalho fixo */
+        top: 0;
+    }
+
+    body.dark-mode .top-header {
+        background-color: var(--card-background-dark);
+        border-color: var(--border-color-dark);
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: var(--primary-color);
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8em;
+        font-weight: 700;
+        transition: color 0.3s ease;
+    }
+
+    body.dark-mode .logo {
+        color: var(--accent-color);
+    }
+
+    .logo:hover {
+        color: #3d8c42;
+    }
+
+    body.dark-mode .logo:hover {
+        color: #e68a00;
+    }
+
+    .logo-icon {
+        width: 30px;
+        height: 30px;
+        fill: var(--primary-color);
+        transition: fill 0.3s ease;
+    }
+
+    body.dark-mode .logo-icon {
+        fill: var(--accent-color);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    html {
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Montserrat', sans-serif;
+      overflow-x: hidden;
+    }
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    .hero-section h1 {
+      font-size: clamp(1.8rem, 4vw, 3.5rem);
+    }
+    .hero-section p {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+    }
+    .cta-button {
+      font-size: clamp(1rem, 2vw, 1.1rem);
+      padding: 12px 20px;
+    }
+    .navbar-container {
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    .recommendation-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .book-card {
+      padding: 20px;
+      word-wrap: break-word;
+    }
+    .top-header, .navbar, .footer {
+      width: 100%;
+    }
+    .top-header {
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .dark-mode-toggle {
+      margin-top: 10px;
+      align-self: flex-end;
+    }
+    .action-buttons {
+      flex-direction: column;
+    }
+    .action-buttons a {
+      width: 100%;
+      max-width: 400px;
+      margin: 10px auto;
+      display: block;
+      text-align: center;
+    }
+    .footer p {
+      font-size: 0.8rem;
+    }
+    .flash-messages {
+      padding: 0 10px;
+    }
+    .hero-svg-book, .hero-svg-glasses, .hero-svg-pen {
+      display: none;
+    }
+    @media (min-width: 600px) {
+      .hero-svg-book, .hero-svg-glasses, .hero-svg-pen {
+        display: block;
+      }
+    }
+  
+    .hero-section {
+      background: linear-gradient(to right, rgba(0, 242, 96, 0.9), rgba(76, 162, 205, 0.9));
+      color: white;
+      padding: 80px 20px;
+      text-align: center;
+      width: 100%;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      margin-bottom: 40px;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+      position: relative; /* For SVG positioning */
+      overflow: hidden; /* Hide overflowing SVGs */
+    }
+
+    .hero-section h1 {
+      font-size: 3.5em;
+      margin-bottom: 15px;
+      color: white; /* Força branco para o hero */
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-section p {
+      font-size: 1.2em;
+      line-height: 1.6;
+      max-width: 700px;
+      margin: 0 auto 30px auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background-color: var(--accent-color);
+      color: white;
+      padding: 15px 30px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.1em;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-button:hover {
+      background-color: #e68a00;
+      transform: translateY(-3px);
+    }
+
+    /* SVG Backgrounds for Hero Section */
+    .hero-svg-book {
+        position: absolute;
+        top: 20%;
+        left: 5%;
+        width: 150px;
+        height: auto;
+        opacity: 0.2;
+        fill: white;
+        transform: rotate(-15deg);
+        z-index: 0;
+    }
+    .hero-svg-glasses {
+        position: absolute;
+        bottom: 10%;
+        right: 10%;
+        width: 120px;
+        height: auto;
+        opacity: 0.2;
+        fill: white;
+        transform: rotate(20deg);
+        z-index: 0;
+    }
+    .hero-svg-pen {
+        position: absolute;
+        top: 10%;
+        right: 5%;
+        width: 80px;
+        height: auto;
+        opacity: 0.15;
+        fill: white;
+        transform: rotate(45deg);
+        z-index: 0;
+    }
+
+
+    .navbar {
+      background-color: var(--secondary-color);
+      padding: 15px 0;
+      width: 100%;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      /* REMOVIDO: position: sticky; */
+      /* REMOVIDO: top: 60px; */
+      z-index: 1000;
+      border-radius: 10px;
+      margin-bottom: 30px;
+    }
+
+    .navbar-container {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 10px 15px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .navbar a:hover {
+      background-color: #555;
+    }
+
+    .flash-messages {
+      list-style: none;
+      padding: 0;
+      margin: 20px auto; /* Centralize */
+      width: 100%;
+      max-width: 800px;
+      text-align: center;
+      opacity: 1; /* Inicialmente visível */
+      transition: opacity 0.5s ease-out; /* Transição para o fade out */
+    }
+
+    .flash-messages.fade-out {
+      opacity: 0;
+    }
+
+    .flash-messages li {
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .flash-messages li.success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .flash-messages li.error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    main {
+      width: 100%;
+      max-width: 1200px;
+      padding: 20px 0;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2.2em;
+      margin-bottom: 30px;
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background-color: var(--primary-color);
+      border-radius: 2px;
+    }
+
+    body.dark-mode .section-title::after {
+      background-color: var(--accent-color);
+    }
+
+    .recommendation-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 30px; /* Isso controla o espaço ENTRE os cards */
+      padding: 20px 0; /* Padding superior e inferior para a grade */
+    }
+
+    .book-card {
+      background-color: var(--card-background-light);
+      border: 1px solid var(--border-color-light);
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    body.dark-mode .book-card {
+      background-color: var(--card-background-dark);
+      border-color: var(--border-color-dark);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .book-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    .book-card h3 {
+      font-size: 1.5em;
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: var(--primary-color);
+    }
+
+    body.dark-mode .book-card h3 {
+      color: var(--accent-color);
+    }
+
+    .book-card .author {
+      font-style: italic;
+      color: #666;
+      margin-bottom: 15px;
+    }
+
+    body.dark-mode .book-card .author {
+      color: #bbb;
+    }
+
+    .book-card .rating {
+      color: var(--accent-color);
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+
+    .book-card .notes {
+      margin-top: 15px;
+      border-top: 1px dashed var(--border-color-light);
+      padding-top: 15px;
+      font-size: 0.9em;
+      color: #555;
+      flex-grow: 1; /* Permite que as notas ocupem espaço extra */
+    }
+
+    body.dark-mode .book-card .notes {
+      border-top-color: var(--border-color-dark);
+      color: #ccc;
+    }
+
+    .book-card .meta-info {
+      font-size: 0.75em;
+      color: #999;
+      margin-top: 10px;
+    }
+
+    body.dark-mode .book-card .meta-info {
+      color: #888;
+    }
+
+    .no-recommendations {
+      text-align: center;
+      color: #888;
+      padding: 40px;
+      font-size: 1.1em;
+      border: 1px dashed var(--border-color-light);
+      border-radius: 10px;
+      margin: 30px auto;
+      max-width: 600px;
+    }
+
+    body.dark-mode .no-recommendations {
+      border-color: var(--border-color-dark);
+      color: #aaa;
+    }
+
+    .action-buttons {
+      text-align: center;
+      margin-top: 50px;
+      margin-bottom: 50px;
+    }
+
+    .action-buttons a {
+      background: linear-gradient(to right, #007bff, #0056b3);
+      color: white;
+      padding: 15px 35px;
+      border: none;
+      border-radius: 30px; /* Botões mais arredondados */
+      cursor: pointer;
+      font-size: 1.1em;
+      text-decoration: none;
+      display: inline-block;
+      margin: 10px;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .action-buttons a:hover {
+      background: linear-gradient(to right, #0056b3, #003d7a);
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+
+    .action-buttons .secondary-button {
+      background: linear-gradient(to right, #6c757d, #5a6268);
+    }
+
+    .action-buttons .secondary-button:hover {
+      background: linear-gradient(to right, #5a6268, #495057);
+    }
+
+    .footer {
+      background-color: var(--secondary-color);
+      color: white;
+      text-align: center;
+      padding: 30px 20px;
+      width: 100%;
+      margin-top: auto; /* Empurra o footer para o final da página */
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .footer p {
+      margin: 5px 0;
+      font-size: 0.9em;
+    }
+
+    .footer a {
+      color: #a0d9b4;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer a:hover {
+      color: #c0e6cf;
+      text-decoration: underline;
+    }
+
+    /* Toggle Dark Mode Button */
+    .dark-mode-toggle {
+      background-color: var(--secondary-color);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px; /* Slightly smaller to fit header */
+      height: 40px; /* Slightly smaller to fit header */
+      font-size: 1.2em; /* Adjusted font size */
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Lighter shadow */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; /* Adiciona box-shadow à transição */
+      margin-left: 20px; /* Space from logo */
+    }
+
+    .dark-mode-toggle:hover {
+      background-color: #555;
+      transform: scale(1.1);
+      box-shadow: none; /* Remove a sombra ao passar o mouse */
+    }
+
+    /* Estilos específicos do modo escuro para o botão de alternância */
+    body.dark-mode .dark-mode-toggle {
+        background-color: #555; /* Ajusta a cor de fundo no modo escuro */
+        color: var(--accent-color); /* Usa a cor de destaque para o ícone no modo escuro */
+        box-shadow: 0 2px 5px rgba(255,255,255,0.1); /* Sombra mais clara no modo escuro */
+    }
+
+    body.dark-mode .dark-mode-toggle:hover {
+        background-color: #666; /* Levemente mais claro ao passar o mouse no modo escuro */
+        transform: scale(1.1);
+        box-shadow: none; /* Remove a sombra ao passar o mouse no modo escuro */
+    }
+
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .hero-section {
+        padding: 60px 15px;
+      }
+      .hero-section h1 {
+        font-size: 2.5em;
+      }
+      .hero-section p {
+        font-size: 1em;
+      }
+      .navbar-container {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .navbar a {
+        padding: 8px 10px;
+      }
+      .section-title {
+        font-size: 1.8em;
+      }
+      .recommendation-grid {
+        grid-template-columns: 1fr; /* Coluna única em telas pequenas */
+        padding: 0 20px; /* Adiciona padding horizontal à grade para afastar dos lados */
+      }
+      .book-card {
+        padding: 20px;
+      }
+      .action-buttons a {
+        width: calc(100% - 20px);
+        margin: 5px 10px;
+      }
+      .hero-svg-book, .hero-svg-glasses, .hero-svg-pen {
+          width: 80px; /* SVGs menores em mobile */
+      }
+      .top-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+      }
+      .dark-mode-toggle {
+          margin-left: 0; /* Remove margem em telas pequenas */
+          align-self: flex-end; /* Empurra para a direita em telas pequenas */
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-section h1 {
+        font-size: 2em;
+      }
+      .hero-section p {
+        font-size: 0.9em;
+      }
+      .action-buttons a {
+        font-size: 1em;
+        padding: 12px 20px;
+      }
+      .recommendation-grid {
+        padding: 0 15px; /* Ajusta padding horizontal para telas muito pequenas */
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-header">
+    <a href="{{ url_for('index') }}" class="logo">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 1H7C5.89543 1 5 1.89543 5 3V23L12 18L19 23V3C19 1.89543 20.1146 1 21 1ZM12 16.1716L7 19.8284V3H19V19.8284L12 16.1716Z" fill-rule="evenodd" clip-rule="evenodd"/>
+            <path d="M12 5C12.5523 5 13 5.44772 13 6V14C13 14.5523 12.5523 15 12 15C11.4477 15 11 14.5523 11 14V6C11 5.44772 11.4477 5 12 5Z"/>
+        </svg>
+        BookJourney
+    </a>
+    <button id="toggle-dark" class="dark-mode-toggle">🌙</button>
+  </div>
+
+  <div class="hero-section">
+    <div class="container">
+      <h1>Sua Jornada Literária Começa Aqui</h1>
+      <p>Organize suas leituras, descubra novos livros e compartilhe suas recomendações com uma comunidade apaixonada.</p>
+      <a href="{{ url_for('add_book') }}" class="cta-button">Comece Seu Diário Agora</a>
+    </div>
+    <!-- SVG Background Elements -->
+    <svg class="hero-svg-book" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path d="M21 1H7C5.89543 1 5 1.89543 5 3V23L12 18L19 23V3C19 1.89543 20.1146 1 21 1ZM12 16.1716L7 19.8284V3H19V19.8284L12 16.1716Z" fill-rule="evenodd" clip-rule="evenodd"/>
+    </svg>
+    <svg class="hero-svg-glasses" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 12C10 14.2091 8.20914 16 6 16C3.79086 16 2 14.2091 2 12C2 9.79086 3.79086 8 6 8C8.20914 8 10 9.79086 10 12ZM10 12C10 14.2091 11.7909 16 14 16C16.2091 16 18 14.2091 18 12C18 9.79086 16.2091 8 14 8C11.7909 8 10 9.79086 10 12ZM22 12C22 14.2091 20.2091 16 18 16C15.7909 16 14 14.2091 14 12C14 9.79086 15.7909 8 18 8C20.2091 8 22 9.79086 22 12Z"/>
+    </svg>
+    <svg class="hero-svg-pen" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14 2C14.5523 2 15 2.44772 15 3V6.58579L20.7071 12.2929C21.0976 12.6834 21.0976 13.3166 20.7071 13.7071L13.7071 20.7071C13.3166 21.0976 12.6834 21.0976 12.2929 20.7071L6.58579 15H3C2.44772 15 2 14.5523 2 14V10C2 9.44772 2.44772 9 3 9H6.58579L12.2929 3.29289C12.6834 2.90237 13.3166 2.90237 13.7071 3.29289L14 2Z"/>
+    </svg>
+  </div>
+
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="{{ url_for('index') }}">Início</a>
+      <a href="{{ url_for('leitura') }}">Leituras</a>
+      {% if session.get('user_id') %}
+        <a href="{{ url_for('dashboard') }}">Meu Diário de Leitura</a>
+        <a href="{{ url_for('add_book') }}">Adicionar Livro</a>
+      {% else %}
+        <a href="{{ url_for('auth') }}">Login/Cadastro</a>
+      {% endif %}
+      <a href="{{ url_for('logout') }}">Sair</a> {# Movido para fora do bloco if/else para sempre aparecer #}
+    </div>
+  </nav>
+
+  <div class="container">
+    <ul class="flash-messages">
+      {% for category, message in get_flashed_messages(with_categories=true) %}
+        <li class="{{ category }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+
+    <main>
+      {% if session.get('user_id') %}
+        <h2 class="section-title">Suas Últimas Recomendações</h2>
+        {% if user_recommendations %}
+          <div class="recommendation-grid">
+            {% for rec in user_recommendations %}
+              <div class="book-card">
+                <h3>{{ rec.title }}</h3>
+                <p class="author">Autor: {{ rec.author }}</p>
+                {% if rec.rating %}
+                  <p class="rating">Avaliação: {{ '⭐' * rec.rating }}</p>
+                {% endif %}
+                {% if rec.notes %}
+                  <p class="notes">Notas: {{ rec.notes }}</p>
+                {% endif %}
+                <p class="meta-info">Adicionado em: {{ rec.added_date }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="no-recommendations">Você ainda não publicou nenhuma recomendação. Que tal adicionar uma?</p>
+        {% endif %}
+      {% endif %}
+
+      <h2 class="section-title" style="margin-top: 40px;">Últimas Recomendações de Outros Usuários</h2> {# Adicionado margin-top aqui #}
+      {% if other_users_recommendations %}
+        <div class="recommendation-grid">
+          {% for rec in other_users_recommendations %}
+            <div class="book-card">
+              <h3>{{ rec.title }}</h3>
+              <p class="author">Autor: {{ rec.author }}</p>
+              {% if rec.rating %}
+                <p class="rating">Avaliação: {{ '⭐' * rec.rating }}</p>
+              {% endif %}
+              {% if rec.notes %}
+                <p class="notes">Notas: {{ rec.notes }}</p>
+              {% endif %}
+              <p class="meta-info">Recomendado por: {{ rec.username }}</p>
+              <p class="meta-info">Adicionado em: {{ rec.added_date }}</p>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="no-recommendations">Ainda não há recomendações públicas de outros usuários.</p>
+      {% endif %}
+
+      <div class="action-buttons">
+        <a href="{{ url_for('all_recommendations') }}" class="cta-button secondary-button">Ver Todas as Recomendações</a>
+        {% if session.get('user_id') %}
+          <a href="{{ url_for('add_book') }}" class="cta-button">Publicar Minha Recomendação</a>
+        {% else %}
+          <a href="{{ url_for('auth') }}" class="cta-button">Faça Login para Publicar</a>
+        {% endif %}
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2025 BookJourney. Todos os direitos reservados.</p>
+    <p>
+      <a href="#">Termos</a> |
+      <a href="#">Privacidade</a> |
+      <a href="#">Contato</a>
+    </p>
+  </footer>
+
+  <script>
+    const toggleBtn = document.getElementById('toggle-dark');
+    const body = document.body;
+
+    // Check for saved dark mode preference on load
+    if (localStorage.getItem('dark-mode') === 'true') {
+      body.classList.add('dark-mode');
+      toggleBtn.textContent = '☀️'; // Change icon to sun
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      body.classList.toggle('dark-mode');
+      // Save preference to localStorage
+      if (body.classList.contains('dark-mode')) {
+        localStorage.setItem('dark-mode', 'true');
+        toggleBtn.textContent = '☀️'; // Change icon to sun
+      } else {
+        localStorage.setItem('dark-mode', 'false');
+        toggleBtn.textContent = '🌙'; // Change icon to moon
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const flashMessages = document.querySelector('.flash-messages');
+        if (flashMessages && flashMessages.children.length > 0) {
+            // Adiciona uma pequena transição de atraso antes de começar a desaparecer
+            setTimeout(() => {
+                flashMessages.classList.add('fade-out');
+                // Remove o elemento do DOM após a transição de fade out
+                flashMessages.addEventListener('transitionend', () => {
+                    flashMessages.remove();
+                });
+            }, 3000); // 3 segundos antes de começar a desaparecer
+        }
+    });
+  </script>
+</body>
+</html>

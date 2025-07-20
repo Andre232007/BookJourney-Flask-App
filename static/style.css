@@ -1,0 +1,567 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
+
+/* --- Global Styles --- */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: #f6f5ee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: 'Montserrat', sans-serif;
+    min-height: 100vh; /* Use min-height to allow content to push the height */
+    margin: 0; /* Remove default body margin */
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    padding: 20px 0; /* Add vertical padding to body for overall spacing */
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background: #2c3e50;
+    color: #e0e0e0;
+}
+
+.dark-mode .container {
+    background-color: #2c3e50;
+    box-shadow: 0 14px 28px rgba(255, 255, 255, 0.05),
+                0 10px 10px rgba(255, 255, 255, 0.03);
+}
+
+.dark-mode form {
+    background: linear-gradient(to top left, rgba(0, 242, 96, 0.8), rgba(76, 162, 205, 0.8));
+    border-radius: 1px;
+    color: #f0f0f0;
+}
+
+.dark-mode input {
+    background-color: #2a2a2a;
+    color: #fff;
+}
+
+.dark-mode input::placeholder {
+    color: #000000;
+}
+
+.dark-mode a {
+    color: #ccc;
+}
+
+.dark-mode button {
+    background: #2c3e50;
+}
+
+.dark-mode button.ghost {
+    background-color: #f39c12;
+    border-color: #f39c12;
+    color: #FFFFFF;
+}
+
+body.dark-mode header {
+    background: linear-gradient(to right, rgba(0, 150, 60, 0.9), rgba(40, 100, 130, 0.9));
+}
+
+body.dark-mode nav {
+    background-color: #222;
+}
+
+.dark-mode .overlay {
+    background: #2c3e50;
+}
+
+.dark-mode .message.success {
+    background-color: #204d30;
+    color: #a1f0b5;
+    border: 1px solid #45c58f;
+}
+
+.dark-mode .message.error {
+    background-color: #5a1d1d;
+    color: #f0a1a1;
+    border: 1px solid #d66;
+}
+
+.dark-mode .social-container a {
+    border: 1px solid #555;
+    color: #eee;
+}
+
+.dark-mode .social-container a:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
+/* --- Typography & Elements --- */
+h1 {
+    font-weight: bold;
+    margin: 0;
+}
+
+p {
+    font-size: 14px;
+    font-weight: 100;
+    line-height: 20px;
+    letter-spacing: 0.5px;
+    margin: 20px 0 30px;
+}
+
+span {
+    font-size: 12px;
+}
+
+a {
+    color: #333;
+    font-size: 14px;
+    text-decoration: none;
+    margin: 15px 0;
+}
+
+button {
+    border-radius: 20px;
+    background: linear-gradient(to top left, rgba(0, 242, 96, 0.8), rgba(76, 162, 205, 0.8));
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 12px 45px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: transform 80ms ease-in;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+button:focus {
+    outline: none;
+}
+
+button.ghost {
+    background-color: transparent;
+    border-color: #FFFFFF;
+}
+
+form {
+    background-color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 50px;
+    height: 100%;
+    text-align: center;
+}
+
+input {
+    background-color: #eee;
+    border: none;
+    padding: 12px 15px;
+    margin: 8px 0;
+    width: 100%;
+}
+
+/* --- Container & Form Layout --- */
+.container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25),
+                0 10px 10px rgba(0,0,0,0.22);
+    position: relative;
+    overflow: hidden;
+    width: 768px;
+    max-width: 100%; /* Ensure it doesn't overflow on smaller screens */
+    min-height: 480px;
+}
+
+.form-container {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    transition: all 0.6s ease-in-out;
+}
+
+.sign-in-container {
+    left: 0;
+    width: 50%;
+    z-index: 2;
+}
+
+.container.right-panel-active .sign-in-container {
+    transform: translateX(100%);
+}
+
+.sign-up-container {
+    left: 0;
+    width: 50%;
+    opacity: 0;
+    z-index: 1;
+}
+
+.container.right-panel-active .sign-up-container {
+    transform: translateX(100%);
+    opacity: 1;
+    z-index: 5;
+    animation: show 0.6s;
+}
+
+@keyframes show {
+    0%, 49.99% { opacity: 0; z-index: 1; }
+    50%, 100% { opacity: 1; z-index: 5; }
+}
+
+.overlay-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: transform 0.6s ease-in-out;
+    z-index: 100;
+}
+
+.container.right-panel-active .overlay-container {
+    transform: translateX(-100%);
+}
+
+.overlay {
+    background: linear-gradient(to top left, rgba(0, 242, 96, 0.8), rgba(76, 162, 205, 0.8));
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 0 0;
+    color: #FFFFFF;
+    position: relative;
+    left: -100%;
+    height: 100%;
+    width: 200%;
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
+}
+
+.container.right-panel-active .overlay {
+    transform: translateX(50%);
+}
+
+.overlay-panel {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 40px;
+    text-align: center;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
+}
+
+.overlay-left {
+    transform: translateX(-20%);
+}
+
+.container.right-panel-active .overlay-left {
+    transform: translateX(0);
+}
+
+.overlay-right {
+    right: 0;
+    transform: translateX(0);
+}
+
+.container.right-panel-active .overlay-right {
+    transform: translateX(20%);
+}
+
+/* --- Social Icons --- */
+.social-container {
+    margin: 20px 0;
+    display: flex;
+    gap: 10px; /* Space between icons */
+}
+
+.social-container a {
+    border: 1px solid #DDDDDD;
+    border-radius: 50%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    width: 40px;
+    color: #333;
+    transition: all 0.3s ease;
+    transform: scale(1);
+}
+
+.social-container a:hover {
+    transform: scale(1.2) rotate(5deg);
+    background-color: rgba(0,0,0,0.05);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Social Icon Entry Animation */
+.social-container a {
+    opacity: 0;
+    animation: fadeInSocial 0.6s ease forwards;
+}
+.social-container a:nth-child(1) { animation-delay: 0.2s; }
+.social-container a:nth-child(2) { animation-delay: 0.4s; }
+.social-container a:nth-child(3) { animation-delay: 0.6s; }
+
+@keyframes fadeInSocial {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* --- Dark Mode Toggle Button --- */
+.dark-mode-toggle {
+    background-color: var(--secondary-color, #4a90e2); /* Added fallback for var */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2em;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    margin-left: 20px;
+    position: fixed; /* Keep it fixed on screen */
+    bottom: 20px; /* Position from bottom */
+    right: 20px; /* Position from right */
+    z-index: 1000; /* Ensure it's above other elements */
+}
+
+.dark-mode-toggle:hover {
+    background-color: #555;
+    transform: scale(1.1);
+    box-shadow: none;
+}
+
+body.dark-mode .dark-mode-toggle {
+    background-color: #555;
+    color: var(--accent-color, #f39c12); /* Added fallback for var */
+    box-shadow: 0 2px 5px rgba(255,255,255,0.1);
+}
+
+body.dark-mode .dark-mode-toggle:hover {
+    background-color: #666;
+    transform: scale(1.1);
+    box-shadow: none;
+}
+
+/* --- Mobile Toggle Buttons (Hidden by default, shown in media queries) --- */
+.mobile-toggle-button {
+    display: none; /* Hide by default */
+    background: transparent;
+    color: #555;
+    border: none;
+    text-decoration: underline;
+    font-size: 14px;
+    font-weight: normal;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    margin-top: 15px; /* Add some space above */
+    padding: 8px 0; /* Add padding for easier tapping */
+    transition: color 0.3s ease;
+}
+
+.mobile-toggle-button:hover {
+    color: #000;
+}
+
+body.dark-mode .mobile-toggle-button {
+    color: #ccc;
+}
+
+body.dark-mode .mobile-toggle-button:hover {
+    color: #fff;
+}
+
+/* --- MEDIA QUERIES FOR RESPONSIVENESS --- */
+
+/* For screens smaller than 768px (tablets in portrait, larger phones) */
+@media (max-width: 768px) {
+    body {
+        padding: 15px; /* More overall padding for smaller screens */
+        align-items: stretch; /* Allow content to stretch */
+    }
+
+    .container {
+        width: 100%; /* Take full width within body padding */
+        margin: 0 auto; /* Center the container */
+        min-height: 550px; /* Ensure enough height for stacked forms */
+        border-radius: 10px; /* Keep consistent border-radius */
+        box-shadow: 0 8px 16px rgba(0,0,0,0.15); /* Lighter shadow for mobile */
+    }
+
+    form {
+        padding: 0 25px; /* Adjust padding for forms on smaller screens */
+    }
+
+    /* Reduce font sizes for better readability */
+    h1 { font-size: 28px; }
+    p { font-size: 13px; margin: 15px 0 25px; }
+    span { font-size: 11px; }
+    button { padding: 10px 40px; font-size: 12px; }
+
+    /* IMPORTANT: Hide the ghost buttons from the overlay in mobile view */
+    button.ghost {
+        display: none;
+    }
+
+    /* Display the new mobile toggle buttons */
+    .mobile-toggle-button {
+        display: block; /* Show them on mobile */
+    }
+
+    /* CRITICAL ADJUSTMENTS FOR FORMS AND OVERLAY IN MOBILE */
+
+    .form-container {
+        position: absolute; /* Allows them to overlap and be hidden */
+        top: 0;
+        left: 0;
+        width: 100%; /* Occupy 100% of the parent container width */
+        height: 100%; /* Occupy 100% of the parent container height */
+        transform: none !important; /* Deactivate any remaining desktop transformations */
+        transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out; /* Smooth transition */
+        /* Ensure z-index is managed correctly by JS if needed, or by active class */
+    }
+
+    /* Completely hide the overlay-container in mobile */
+    .overlay-container {
+        display: none; /* Remove from document flow */
+        visibility: hidden; /* Ensure no visual remnants */
+    }
+
+    /* Set the sign-in form as visible by default */
+    .sign-in-container {
+        opacity: 1;
+        visibility: visible;
+        z-index: 2; /* Keep on top */
+    }
+
+    /* Set the sign-up form as hidden by default */
+    .sign-up-container {
+        opacity: 0;
+        visibility: hidden;
+        z-index: 1; /* Keep underneath */
+        position: absolute; /* Ensure it's positioned correctly for stacking */
+        top: 0;
+        left: 0;
+    }
+
+    /* When .right-panel-active is active, show sign-up and hide sign-in */
+    .container.right-panel-active .sign-up-container {
+        opacity: 1;
+        visibility: visible;
+        z-index: 2; /* Sign-up comes to top */
+    }
+
+    .container.right-panel-active .sign-in-container {
+        opacity: 0;
+        visibility: hidden;
+        z-index: 1; /* Sign-in goes underneath */
+    }
+
+    /* Adjustments for social container and icons */
+    .social-container {
+        margin: 15px 0;
+    }
+}
+
+/* For screens smaller than 480px (typical mobile phones) */
+@media (max-width: 480px) {
+    .container {
+        min-height: 520px; /* Slightly reduce min-height for very small screens if needed */
+        margin: 10px auto; /* Adjust margin */
+    }
+
+    form {
+        padding: 0 15px; /* Further reduce padding */
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    p {
+        font-size: 12px;
+        margin: 10px 0 20px;
+    }
+
+    button {
+        padding: 10px 30px;
+        font-size: 11px;
+    }
+
+    .social-container {
+        margin: 10px 0;
+    }
+
+    .social-container a {
+        height: 35px;
+        width: 35px;
+    }
+
+    .dark-mode-toggle {
+        width: 35px; /* Slightly smaller button for very small screens */
+        height: 35px;
+        font-size: 1.1em;
+        bottom: 15px; /* Adjust position */
+        right: 15px; /* Adjust position */
+    }
+}
+
+/* For screens smaller than 320px (very small phones) */
+@media (max-width: 320px) {
+    .container {
+        min-height: 480px;
+        border-radius: 5px; /* Slightly less rounded corners */
+    }
+    form {
+        padding: 0 10px;
+    }
+    h1 {
+        font-size: 20px;
+    }
+    p {
+        font-size: 10px;
+        margin: 8px 0 15px;
+    }
+    button {
+        padding: 8px 25px;
+        font-size: 10px;
+    }
+    input {
+        padding: 10px 12px;
+        margin: 6px 0;
+    }
+    .social-container {
+        margin: 8px 0;
+    }
+    .social-container a {
+        height: 30px;
+        width: 30px;
+        font-size: 0.9em; /* Adjust icon size */
+    }
+}
