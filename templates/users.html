@@ -711,7 +711,7 @@
                 </thead>
                 <tbody>
                     {% for user in users %}
-                    <tr>
+                    <tr >
                         <td data-label="ID">{{ user.id }}</td>
                         <td data-label="Nome">{{ user.username }}</td>
                         <td data-label="Email">{{ user.email }}</td>
@@ -722,7 +722,18 @@
                             {% else %}
                                 {{ 'Você' if session.get('user_id') == user.id else '' }}
                             {% endif %}
+
+                            {% if session.get('is_admin') and not user.is_admin %}
+   <form action="{{ url_for('make_admin', user_id=user.id) }}" method="POST" style="display: inline;">
+    <button type="submit" class="delete-button">Tornar Admin</button>
+</form>
+{% elif user.is_admin %}
+    <span style="color: var(--accent-color); font-weight: bold;">✔ Admin</span>
+{% else %}
+    {{ 'Você' if session.get('user_id') == user.id else '' }}
+{% endif %}
                         </td>
+
                     </tr>
                     {% endfor %}
                 </tbody>

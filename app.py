@@ -458,7 +458,7 @@ def update_reading_progress():
 
     progress_entry = UserCommunityBookProgress.query.filter_by(
         user_id=user_id, 
-        community_book_id=book_id # CORRIGIDO AQUI: Usando book_id
+        community_book_id=book.id
     ).first()
 
     if progress_entry:
@@ -476,35 +476,6 @@ def update_reading_progress():
     
     db.session.commit()
     return jsonify({'status': 'success', 'message': 'Progresso atualizado.'}), 200
-
-# NOVA ROTA: Para apagar um livro da comunidade
-@app.route('/delete_community_book/<int:book_id>', methods=['POST'])
-@login_required # Apenas usuários logados podem tentar apagar
-def delete_community_book(book_id):
-    user_id = session['user_id']
-    is_admin = session.get('is_admin', False)
-
-    book_to_delete = CommunityBook.query.get(book_id)
-
-    if not book_to_delete:
-        flash('Livro não encontrado.', 'error')
-        return redirect(url_for('leitura'))
-
-    # Verifica se o usuário é o contribuidor ou um administrador
-    if book_to_delete.contributor_id == user_id or is_admin:
-        try:
-            # Apaga o progresso de leitura associado a este livro primeiro
-            UserCommunityBookProgress.query.filter_by(community_book_id=book_id).delete()
-            db.session.delete(book_to_delete)
-            db.session.commit()
-            flash(f'Livro "{book_to_delete.title}" removido da biblioteca da comunidade.', 'success')
-        except Exception as e:
-            db.session.rollback()
-            flash(f'Erro ao remover o livro: {e}', 'error')
-    else:
-        flash('Você não tem permissão para remover este livro.', 'error')
-    
-    return redirect(url_for('leitura'))
 
 
 # --- Rotas Administrativas ---
